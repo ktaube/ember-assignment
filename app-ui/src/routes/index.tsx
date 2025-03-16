@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useTRPC } from "../trpc-client";
 import { useQuery } from "@tanstack/react-query";
+import AddressTable from "./-components/address-table";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -9,7 +10,9 @@ export const Route = createFileRoute("/")({
 function App() {
   const trpc = useTRPC();
 
-  const { data: hello } = useQuery(trpc.hello.queryOptions("Kristaps"));
+  const { data: hello } = useQuery(trpc.hello.queryOptions("Ember"));
+
+  console.log(hello);
 
   return (
     <>
@@ -23,10 +26,8 @@ function App() {
               Browse and search through our comprehensive address database.
             </p>
           </div>
+          <AddressTable />
         </div>
-      </div>
-      <div className="flex flex-col items-center justify-center h-screen text-2xl">
-        <header>{hello}</header>
       </div>
     </>
   );

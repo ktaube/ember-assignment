@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import { AppRouter, appRouter } from "./trpc-api";
+import { AppRouter, appRouter } from "./trpc";
 import {
   fastifyTRPCPlugin,
   FastifyTRPCPluginOptions,

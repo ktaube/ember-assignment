@@ -8,12 +8,6 @@ export const Route = createFileRoute("/")({
 });
 
 function App() {
-  const trpc = useTRPC();
-
-  const { data: hello } = useQuery(trpc.hello.queryOptions("Ember"));
-
-  console.log(hello);
-
   return (
     <>
       <div className="container mx-auto py-8 px-4">

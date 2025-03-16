@@ -1,14 +1,14 @@
-import { useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
   Search,
-  SlidersHorizontal,
 } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -18,13 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Card } from "@/components/ui/card";
 import { useTRPC } from "@/trpc-client";
 import { useQuery } from "@tanstack/react-query";
 

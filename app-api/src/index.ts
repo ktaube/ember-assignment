@@ -1,14 +1,28 @@
-import { Hono } from "hono";
-import { trpcServer } from "@hono/trpc-server";
-import { appRouter } from "./trpc-api";
+import fastify from "fastify";
+import { AppRouter, appRouter } from "./trpc-api";
+import {
+  fastifyTRPCPlugin,
+  FastifyTRPCPluginOptions,
+} from "@trpc/server/adapters/fastify";
+const server = fastify({
+  logger: true,
+});
 
-const app = new Hono();
-
-app.use(
-  "/trpc/*",
-  trpcServer({
+server.register(fastifyTRPCPlugin, {
+  prefix: "/trpc",
+  trpcOptions: {
     router: appRouter,
-  })
-);
-
-export default app;
+    onError({ path, error }) {
+      // report to error monitoring
+      console.error(`Error in tRPC handler on path '${path}':`, error);
+    },
+  } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"],
+});
+(async () => {
+  try {
+    await server.listen({ port: parseInt(process.env.PORT!) });
+  } catch (err) {
+    server.log.error(err);
+    process.exit(1);
+  }
+})();

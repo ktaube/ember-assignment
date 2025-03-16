@@ -72,12 +72,11 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
 
   const onCloseDeleteDialog = () => {
     setItemToDelete(null);
+  };
+
+  const onDelete = () => {
     queryClient.invalidateQueries({
-      queryKey: trpc.addresses.listAddresses.queryKey({
-        page,
-        perPage,
-        search,
-      }),
+      queryKey: trpc.addresses.listAddresses.queryKey(),
     });
   };
 
@@ -207,7 +206,11 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
           </div>
         </div>
       ) : null}
-      <DeleteDialog id={itemToDelete} onClose={onCloseDeleteDialog} />
+      <DeleteDialog
+        id={itemToDelete}
+        onClose={onCloseDeleteDialog}
+        onDelete={onDelete}
+      />
     </Card>
   );
 }

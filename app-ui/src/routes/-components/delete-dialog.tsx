@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 interface DeleteDialogProps {
   id: number | null;
   onClose: () => void;
+  onDelete: () => void;
   title?: string;
   description?: string;
 }
@@ -23,6 +24,7 @@ export function DeleteDialog({
   onClose,
   title = "Are you sure?",
   description = "This action cannot be undone. This will permanently delete this item.",
+  onDelete,
 }: DeleteDialogProps) {
   const trpc = useTRPC();
 
@@ -30,9 +32,16 @@ export function DeleteDialog({
     trpc.addresses.deleteAddress.mutationOptions()
   );
 
-  const onDelete = () => {
+  const handleDelete = () => {
     if (!id) return;
-    deleteItem.mutate({ id });
+    deleteItem.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          onDelete();
+        },
+      }
+    );
   };
 
   return (
@@ -46,7 +55,7 @@ export function DeleteDialog({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className="bg-red-600 hover:bg-red-700"
-            onClick={onDelete}
+            onClick={handleDelete}
             disabled={deleteItem.isPending}
           >
             {deleteItem.isPending ? "Deleting..." : "Delete"}

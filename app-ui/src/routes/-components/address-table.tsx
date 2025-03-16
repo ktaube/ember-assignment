@@ -56,6 +56,8 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
     });
   };
 
+  const hasSearch = !!params.search?.length;
+
   return (
     <Card className="overflow-hidden">
       <div className="p-4 border-b flex flex-col sm:flex-row gap-4">
@@ -80,9 +82,9 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Address</TableHead>
-              <TableHead>Country</TableHead>
-              <TableHead>Postal Code</TableHead>
+              <TableHead className="w-[50%]">Address</TableHead>
+              <TableHead className="w-[25%]">Country</TableHead>
+              <TableHead className="w-[25%]">Postal Code</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -105,13 +107,13 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
         </Table>
       </div>
 
-      <div className="p-4 border-t flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          Showing {addresses.length > 0 ? page * perPage + 1 : 0} to{" "}
-          {Math.min(page * perPage + perPage, addresses.length)} of{" "}
-          {addresses.length} addresses
-        </div>
-        {!params.search?.length ? (
+      {!hasSearch ? (
+        <div className="p-4 border-t flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Showing {addresses.length > 0 ? page * perPage + 1 : 0} to{" "}
+            {Math.min(page * perPage + perPage, addresses.length)} of{" "}
+            {addresses.length} addresses
+          </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -149,8 +151,8 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
               <ChevronsRight className="h-4 w-4" />
             </Button>
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </Card>
   );
 }

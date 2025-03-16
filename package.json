@@ -1,0 +1,18 @@
+{
+  "name": "ember-assignment",
+  "version": "1.0.0",
+  "description": "Ember assignment",
+  "main": "index.js",
+  "scripts": {
+    "dev:app-ui": "cd app-ui && pnpm dev",
+    "dev:app-api": "cd app-api && pnpm dev",
+    "dev": "concurrently \"pnpm run dev:app-ui\" \"pnpm run dev:app-api\""
+  },
+  "keywords": [],
+  "author": "Kristaps Taube",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.2",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

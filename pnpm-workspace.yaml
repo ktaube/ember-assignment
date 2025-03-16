@@ -1,0 +1,7 @@
+packages:
+  - app-ui
+  - app-api
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - workerd

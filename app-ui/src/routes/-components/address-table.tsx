@@ -23,7 +23,7 @@ import { z } from "zod";
 
 export type AddressSearchParams = z.infer<typeof addressSearchSchema>;
 export const addressSearchSchema = z.object({
-  search: z.string().trim().optional(),
+  search: z.string().optional(),
   page: z.number().min(1).optional(),
   perPage: z.number().min(1).max(100).optional(),
 });

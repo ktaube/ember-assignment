@@ -1,11 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import AddressTable from "./-components/address-table";
+import AddressTable, {
+  addressSearchSchema,
+  type AddressSearchParams,
+} from "./-components/address-table";
 
 export const Route = createFileRoute("/")({
   component: App,
+  validateSearch: (search) => addressSearchSchema.parse(search),
 });
 
 function App() {
+  const params = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  const onParamsUpdate = (params: AddressSearchParams) => {
+    navigate({
+      search: params,
+    });
+  };
+
   return (
     <>
       <div className="container mx-auto py-8 px-4">
@@ -18,7 +31,7 @@ function App() {
               Browse and search through our comprehensive address database.
             </p>
           </div>
-          <AddressTable />
+          <AddressTable params={params} onParamsUpdate={onParamsUpdate} />
         </div>
       </div>
     </>

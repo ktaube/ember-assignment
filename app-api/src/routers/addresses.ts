@@ -2,7 +2,8 @@ import { z } from "zod";
 import { db } from "../db";
 import { publicProcedure } from "../trpc/context";
 import * as schema from "../db/schema";
-import { count, like, or } from "drizzle-orm";
+import { count, eq, like, or } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const listAddresses = publicProcedure
   .input(
@@ -50,4 +51,22 @@ export const listAddresses = publicProcedure
       page,
       perPage,
     };
+  });
+
+export const getAddress = publicProcedure
+  .input(z.object({ id: z.number() }))
+  .query(async ({ input }) => {
+    const { id } = input;
+    const address = await db.query.addresses.findFirst({
+      where: eq(schema.addresses.id, id),
+    });
+
+    if (!address) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Address not found",
+      });
+    }
+
+    return address;
   });

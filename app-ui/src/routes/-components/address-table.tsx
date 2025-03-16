@@ -15,11 +15,13 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TableLinkRow,
   TableRow,
 } from "@/components/ui/table";
 import { useTRPC } from "@/trpc-client";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
+import { Link } from "@tanstack/react-router";
 
 export type AddressSearchParams = z.infer<typeof addressSearchSchema>;
 export const addressSearchSchema = z.object({
@@ -90,11 +92,15 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
           <TableBody>
             {addresses.length > 0 ? (
               addresses.map((address) => (
-                <TableRow key={address.id}>
+                <TableLinkRow
+                  to={`/addresses/$id`}
+                  params={{ id: address.id.toString() }}
+                  key={address.id}
+                >
                   <TableCell>{address.address}</TableCell>
                   <TableCell>{address.country}</TableCell>
                   <TableCell>{address.zip}</TableCell>
-                </TableRow>
+                </TableLinkRow>
               ))
             ) : (
               <TableRow>

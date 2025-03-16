@@ -36,7 +36,7 @@ type Props = {
 export default function AddressTable({ params, onParamsUpdate }: Props) {
   const trpc = useTRPC();
 
-  const { page = 1, perPage = 10, search } = params;
+  const { page = 1, perPage = 100, search } = params;
 
   const { data } = useQuery(
     trpc.addresses.listAddresses.queryOptions({

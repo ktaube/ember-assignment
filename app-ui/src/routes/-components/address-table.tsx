@@ -5,6 +5,7 @@ import {
   ChevronsRight,
   Search,
   MoreVertical,
+  Loader2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
 
   const { page = 1, perPage = 100, search } = params;
 
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     trpc.addresses.listAddresses.queryOptions({
       page,
       perPage,
@@ -148,7 +149,11 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
             ) : (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-8">
-                  No addresses found matching your criteria
+                  {isLoading ? (
+                    <Loader2 className="h-12 w-12 animate-spin mx-auto" />
+                  ) : (
+                    "No addresses found matching your criteria"
+                  )}
                 </TableCell>
               </TableRow>
             )}

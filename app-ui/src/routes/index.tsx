@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useTRPC } from "../trpc-client";
-import { useQuery } from "@tanstack/react-query";
 import AddressTable from "./-components/address-table";
 
 export const Route = createFileRoute("/")({

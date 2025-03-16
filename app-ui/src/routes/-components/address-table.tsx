@@ -19,13 +19,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -38,36 +31,23 @@ import { useQuery } from "@tanstack/react-query";
 export default function AddressTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [countryFilter, setCountryFilter] = useState("all");
-  const [visibleColumns, setVisibleColumns] = useState({
-    street: true,
-    city: true,
-    state: true,
-    postalCode: true,
-    country: true,
-  });
 
   const itemsPerPage = 10;
 
   const trpc = useTRPC();
 
-  const { data: addresses = [] } = useQuery(
+  const { data: addresses = { data: [] } } = useQuery(
     trpc.addresses.listAddresses.queryOptions()
   );
 
   // Filter addresses based on search term and country filter
-  const filteredAddresses = addresses.filter((address) => {
+  const filteredAddresses = addresses.data.filter((address) => {
     const matchesSearch =
-      address.street.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      address.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      address.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      address.postalCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      address.country.toLowerCase().includes(searchTerm.toLowerCase());
+      address.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      address.country?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      address.zip?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCountry =
-      countryFilter === "all" || address.country === countryFilter;
-
-    return matchesSearch && matchesCountry;
+    return matchesSearch;
   });
 
   // Calculate pagination
@@ -78,23 +58,9 @@ export default function AddressTable() {
     startIndex + itemsPerPage
   );
 
-  // Get unique countries for filter dropdown
-  const uniqueCountries = [
-    "all",
-    ...new Set(addresses.map((address) => address.country)),
-  ];
-
   // Handle page changes
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
-  };
-
-  // Toggle column visibility
-  const toggleColumn = (column: keyof typeof visibleColumns) => {
-    setVisibleColumns({
-      ...visibleColumns,
-      [column]: !visibleColumns[column],
-    });
   };
 
   return (
@@ -110,98 +76,29 @@ export default function AddressTable() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex gap-2">
-          <Select value={countryFilter} onValueChange={setCountryFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by country" />
-            </SelectTrigger>
-            <SelectContent>
-              {uniqueCountries.map((country) => (
-                <SelectItem key={country} value={country}>
-                  {country === "all" ? "All Countries" : country}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <SlidersHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuCheckboxItem
-                checked={visibleColumns.street}
-                onCheckedChange={() => toggleColumn("street")}
-              >
-                Street
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={visibleColumns.city}
-                onCheckedChange={() => toggleColumn("city")}
-              >
-                City
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={visibleColumns.state}
-                onCheckedChange={() => toggleColumn("state")}
-              >
-                State/Province
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={visibleColumns.postalCode}
-                onCheckedChange={() => toggleColumn("postalCode")}
-              >
-                Postal Code
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={visibleColumns.country}
-                onCheckedChange={() => toggleColumn("country")}
-              >
-                Country
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
       </div>
 
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              {visibleColumns.street && <TableHead>Street</TableHead>}
-              {visibleColumns.city && <TableHead>City</TableHead>}
-              {visibleColumns.state && <TableHead>State/Province</TableHead>}
-              {visibleColumns.postalCode && <TableHead>Postal Code</TableHead>}
-              {visibleColumns.country && <TableHead>Country</TableHead>}
+              <TableHead>Address</TableHead>
+              <TableHead>Country</TableHead>
+              <TableHead>Postal Code</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedAddresses.length > 0 ? (
               paginatedAddresses.map((address) => (
                 <TableRow key={address.id}>
-                  {visibleColumns.street && (
-                    <TableCell>{address.street}</TableCell>
-                  )}
-                  {visibleColumns.city && <TableCell>{address.city}</TableCell>}
-                  {visibleColumns.state && (
-                    <TableCell>{address.state || "-"}</TableCell>
-                  )}
-                  {visibleColumns.postalCode && (
-                    <TableCell>{address.postalCode || "-"}</TableCell>
-                  )}
-                  {visibleColumns.country && (
-                    <TableCell>{address.country}</TableCell>
-                  )}
+                  <TableCell>{address.address}</TableCell>
+                  <TableCell>{address.country}</TableCell>
+                  <TableCell>{address.zip}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={Object.values(visibleColumns).filter(Boolean).length}
-                  className="text-center py-8"
-                >
+                <TableCell colSpan={3} className="text-center py-8">
                   No addresses found matching your criteria
                 </TableCell>
               </TableRow>

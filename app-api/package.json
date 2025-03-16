@@ -1,14 +1,18 @@
 {
   "name": "app-api",
   "scripts": {
-    "dev": "PORT=4201 tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "@trpc/server": "11.0.0-rc.828",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
     "fastify": "^5.2.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "drizzle-kit": "^0.30.5",
     "tsx": "^4.19.3"
   }
 }

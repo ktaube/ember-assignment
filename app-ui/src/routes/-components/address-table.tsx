@@ -38,28 +38,15 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
 
   const { page = 1, perPage = 10, search } = params;
 
-  const { data: addresses = { data: [] } } = useQuery(
-    trpc.addresses.listAddresses.queryOptions()
+  const { data } = useQuery(
+    trpc.addresses.listAddresses.queryOptions({
+      page,
+      perPage,
+      search,
+    })
   );
 
-  // Filter addresses based on search term and country filter
-  const filteredAddresses = addresses.data.filter((address) => {
-    if (!search) return true;
-    const matchesSearch =
-      address.address.toLowerCase().includes(search.toLowerCase()) ||
-      address.country?.toLowerCase().includes(search.toLowerCase()) ||
-      address.zip?.toLowerCase().includes(search.toLowerCase());
-
-    return matchesSearch;
-  });
-
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredAddresses.length / perPage);
-  const startIndex = (page - 1) * perPage;
-  const paginatedAddresses = filteredAddresses.slice(
-    startIndex,
-    startIndex + perPage
-  );
+  const { data: addresses = [], totalPages = 1 } = data ?? {};
 
   // Handle page changes
   const goToPage = (page: number) => {
@@ -99,8 +86,8 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedAddresses.length > 0 ? (
-              paginatedAddresses.map((address) => (
+            {addresses.length > 0 ? (
+              addresses.map((address) => (
                 <TableRow key={address.id}>
                   <TableCell>{address.address}</TableCell>
                   <TableCell>{address.country}</TableCell>
@@ -120,47 +107,49 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
 
       <div className="p-4 border-t flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {paginatedAddresses.length > 0 ? startIndex + 1 : 0} to{" "}
-          {Math.min(startIndex + perPage, filteredAddresses.length)} of{" "}
-          {filteredAddresses.length} addresses
+          Showing {addresses.length > 0 ? page * perPage + 1 : 0} to{" "}
+          {Math.min(page * perPage + perPage, addresses.length)} of{" "}
+          {addresses.length} addresses
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => goToPage(1)}
-            disabled={page === 1}
-          >
-            <ChevronsLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => goToPage(page - 1)}
-            disabled={page === 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-medium">
-            Page {page} of {totalPages || 1}
-          </span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => goToPage(page + 1)}
-            disabled={page === totalPages || totalPages === 0}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => goToPage(totalPages)}
-            disabled={page === totalPages || totalPages === 0}
-          >
-            <ChevronsRight className="h-4 w-4" />
-          </Button>
-        </div>
+        {!params.search?.length ? (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => goToPage(1)}
+              disabled={page === 1}
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-medium">
+              Page {page} of {totalPages || 1}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => goToPage(page + 1)}
+              disabled={page === totalPages || totalPages === 0}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => goToPage(totalPages)}
+              disabled={page === totalPages || totalPages === 0}
+            >
+              <ChevronsRight className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : null}
       </div>
     </Card>
   );

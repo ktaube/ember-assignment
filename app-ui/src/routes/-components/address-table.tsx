@@ -4,6 +4,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Search,
+  MoreVertical,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTRPC } from "@/trpc-client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { Link } from "@tanstack/react-router";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import { DeleteDialog } from "./delete-dialog";
 
 export type AddressSearchParams = z.infer<typeof addressSearchSchema>;
 export const addressSearchSchema = z.object({
@@ -37,6 +45,9 @@ type Props = {
 
 export default function AddressTable({ params, onParamsUpdate }: Props) {
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   const { page = 1, perPage = 100, search } = params;
 
@@ -55,6 +66,17 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
     onParamsUpdate({
       ...params,
       page: Math.max(1, Math.min(page, totalPages)),
+    });
+  };
+
+  const onCloseDeleteDialog = () => {
+    setItemToDelete(null);
+    queryClient.invalidateQueries({
+      queryKey: trpc.addresses.listAddresses.queryKey({
+        page,
+        perPage,
+        search,
+      }),
     });
   };
 
@@ -84,9 +106,10 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50%]">Address</TableHead>
-              <TableHead className="w-[25%]">Country</TableHead>
-              <TableHead className="w-[25%]">Postal Code</TableHead>
+              <TableHead className="w-[45%]">Address</TableHead>
+              <TableHead className="w-[20%]">Country</TableHead>
+              <TableHead className="w-[20%]">Postal Code</TableHead>
+              <TableHead className="w-[5%]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,11 +123,31 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
                   <TableCell>{address.address}</TableCell>
                   <TableCell>{address.country}</TableCell>
                   <TableCell>{address.zip}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setItemToDelete(address.id);
+                          }}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </TableLinkRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="text-center py-8">
+                <TableCell colSpan={4} className="text-center py-8">
                   No addresses found matching your criteria
                 </TableCell>
               </TableRow>
@@ -159,6 +202,7 @@ export default function AddressTable({ params, onParamsUpdate }: Props) {
           </div>
         </div>
       ) : null}
+      <DeleteDialog id={itemToDelete} onClose={onCloseDeleteDialog} />
     </Card>
   );
 }

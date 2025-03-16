@@ -70,3 +70,11 @@ export const getAddress = publicProcedure
 
     return address;
   });
+
+export const deleteAddress = publicProcedure
+  .input(z.object({ id: z.number() }))
+  .mutation(async ({ input }) => {
+    const { id } = input;
+    await db.delete(schema.addresses).where(eq(schema.addresses.id, id));
+    return { success: true };
+  });

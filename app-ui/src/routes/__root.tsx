@@ -22,18 +22,6 @@ export const Route = createRootRoute({
       <QueryClientProvider client={queryClient}>
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <Navbar />
-          <div className="container mx-auto py-8 px-4">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">
-                  Address Directory
-                </h1>
-                <p className="text-muted-foreground">
-                  Browse and search through our comprehensive address database.
-                </p>
-              </div>
-            </div>
-          </div>
           <Outlet />
         </TRPCProvider>
       </QueryClientProvider>

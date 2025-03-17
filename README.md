@@ -6,5 +6,9 @@ To run this application:
 cp app-api/.env.example app-api/.env
 
 pnpm install
+
+pnpm db:migrate
+pnpm db:seed
+
 pnpm dev
 ```

@@ -6,7 +6,10 @@
   "scripts": {
     "dev:app-ui": "cd app-ui && pnpm dev",
     "dev:app-api": "cd app-api && pnpm dev",
-    "dev": "concurrently \"pnpm run dev:app-ui\" \"pnpm run dev:app-api\""
+    "dev": "concurrently \"pnpm run dev:app-ui\" \"pnpm run dev:app-api\"",
+    "db:generate": "cd app-api && pnpm db:generate",
+    "db:migrate": "cd app-api && pnpm db:migrate",
+    "db:seed": "cd app-api && pnpm db:seed"
   },
   "keywords": [],
   "author": "Kristaps Taube",

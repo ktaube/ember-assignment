@@ -1,23 +1,13 @@
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode, type ReactNode } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import "./styles.css";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "../../app-api/src/types";
-import { getQueryClient, TRPCProvider } from "./trpc-client";
 import { QueryClientProvider } from "@tanstack/react-query";
-
-const trpcClient = createTRPCClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      url: "/trpc",
-    }),
-  ],
-});
+import "./styles.css";
+import { getQueryClient, trpcClient, TRPCProvider } from "./trpc-client";
 
 export type RouterContext = {
   trpc: typeof trpcClient;

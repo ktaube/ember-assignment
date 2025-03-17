@@ -1,11 +1,17 @@
 {
-  "name": "app-api",
+  "name": "@ktdev/app-api",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsc",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx scripts/seed.ts"
   },
+  "files": [
+    "dist/*.d.ts"
+  ],
+  "types": "./dist/types.d.ts",
+  "main": "./dist/types.js",
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "@trpc/server": "11.0.0-rc.828",

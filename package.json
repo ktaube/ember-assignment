@@ -9,7 +9,8 @@
     "dev": "concurrently \"pnpm run dev:app-ui\" \"pnpm run dev:app-api\"",
     "db:generate": "cd app-api && pnpm db:generate",
     "db:migrate": "cd app-api && pnpm db:migrate",
-    "db:seed": "cd app-api && pnpm db:seed"
+    "db:seed": "cd app-api && pnpm db:seed",
+    "build": "cd ./app-api && pnpm build && cd ../app-ui && pnpm build"
   },
   "keywords": [],
   "author": "Kristaps Taube",

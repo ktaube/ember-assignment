@@ -1,8 +1,10 @@
-```
-npm install
-npm run dev
-```
+# Getting Started
+
+To run this application:
 
 ```
-npm run deploy
+cp .env.example .env
+
+pnpm install
+pnpm run dev
 ```

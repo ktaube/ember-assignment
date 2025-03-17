@@ -2,7 +2,9 @@
 
 To run this application:
 
-```bash
+```sh
+cp app-api/.env.example app-api/.env
+
 pnpm install
-pnpm start
+pnpm dev
 ```

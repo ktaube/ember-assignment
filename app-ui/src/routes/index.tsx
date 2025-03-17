@@ -3,6 +3,7 @@ import AddressTable, {
   addressSearchSchema,
   type AddressSearchParams,
 } from "./-components/address-table";
+import { useCallback } from "react";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -13,11 +14,14 @@ function App() {
   const params = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const onParamsUpdate = (params: AddressSearchParams) => {
-    navigate({
-      search: params,
-    });
-  };
+  const onParamsUpdate = useCallback(
+    (params: AddressSearchParams) => {
+      navigate({
+        search: params,
+      });
+    },
+    [navigate]
+  );
 
   return (
     <>

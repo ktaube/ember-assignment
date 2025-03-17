@@ -23,6 +23,7 @@
   "devDependencies": {
     "casual": "^1.6.2",
     "drizzle-kit": "^0.30.5",
-    "tsx": "^4.19.3"
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.2"
   }
 }
